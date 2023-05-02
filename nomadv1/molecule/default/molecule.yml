@@ -1,0 +1,52 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+  - name: fedora_instance
+    image: gamer9460/fedora_image:latest
+    pre_build_image: true
+    privileged: true
+    cgroup_parent: docker.slice
+    cgroupns_mode: private
+    override_command: false
+    capabilities:
+      - SYS_ADMIN
+    security_opts:
+      - seccomp=unconfined
+    tmpfs:
+      - /run
+      - /tmp
+      - /run/lock
+  - name: ubuntu_instance
+    image: maddy0238/ansible-ubuntu-systemd:latest
+    pre_build_image: true
+    privileged: true
+    cgroup_parent: docker.slice
+    cgroupns_mode: private
+    override_command: false
+    capabilities:
+      - SYS_ADMIN
+    security_opts:
+      - seccomp=unconfined
+    tmpfs:
+      - /run
+      - /tmp
+      - /run/lock
+  - name: redhat_instance
+    image: gamer9460/redhat_systemd:latest
+    pre_build_image: true
+    privileged: true
+    cgroup_parent: docker.slice
+    cgroupns_mode: private
+    override_command: false
+    capabilities:
+      - SYS_ADMIN
+    security_opts:
+      - seccomp=unconfined
+    tmpfs:
+      - /run
+      - /tmp
+      - /run/lock
+

@@ -1,0 +1,13 @@
+---
+# defaults file for nomad
+nomad_version: 1.5.3
+
+# Where to place the binary.
+nomad_destination: /usr/local/bin
+
+# Terraform binary mirror:
+nomad_software_mirror: releases.hashicorp.com
+
+nomad_config_dir: /etc/nomad.d
+
+nomad_data_dir: /var/lib/nomad

@@ -1,0 +1,77 @@
+---
+- name: Import assert.yml
+  ansible.builtin.import_tasks: assert.yml
+  run_once: true
+  delegate_to: localhost
+  become: yes
+  remote_user: root
+
+- name: sudo install
+  command: yum install sudo -y 
+  when: ansible_os_family == "RedHat"    
+
+- name: update cache
+  apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
+  when: ansible_os_family == "Debian" 
+
+- name: Set remote temporary directory
+  ansible.builtin.set_fact:
+    ansible_tmp_dir: "/tmp/ansible"  # Specify the remote temporary directory path
+  when: ansible_os_family in ["RedHat", "Debian","Fedora"] 
+
+- name: update cache
+  ansible.builtin.package:
+    name: dnf-plugins-core
+    state: present
+  when: ansible_os_family == "Fedora"
+
+
+- name: Download and install software
+  ansible.builtin.unarchive:
+    src: "https://releases.hashicorp.com/nomad/{{ nomad_version }}/nomad_{{ nomad_version }}_linux_amd64.zip"
+    dest: "{{ nomad_destination }}"
+    remote_src: yes
+    owner: root
+    group: root
+    mode: '0755'
+  when: ansible_os_family == "Debian" or ansible_os_family == "Fedora"
+     
+- name: Create Nomad config directory
+  ansible.builtin.file:
+    path: "{{ nomad_config_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Create Nomad data directory
+  ansible.builtin.file:
+    path: "{{ nomad_data_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Copy Nomad configuration
+  ansible.builtin.copy:
+    src: "files/nomad.hcl"
+    dest: /etc/nomad.d/nomad.hcl
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Copy Nomad configuration
+  ansible.builtin.copy:
+    src: "files/nomad.service"
+    dest: /etc/systemd/system/nomad.service
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Enable and start Nomad service
+  ansible.builtin.systemd:
+    name: nomad
+    enabled: true
+    state: started
+    daemon_reload: true
+

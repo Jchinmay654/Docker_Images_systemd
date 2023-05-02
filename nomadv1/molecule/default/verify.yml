@@ -1,0 +1,17 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  gather_facts: false
+  become: true
+  tasks:
+
+  - name: check nomad daemon
+    service:
+      name: nomad
+      state: started
+      enabled: true
+    check_mode: true
+    register: molecule_service
+    failed_when: (molecule_service is changed) or (molecule_service is failed)

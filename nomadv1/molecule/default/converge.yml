@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include test.nomadv1"
+      include_role:
+        name: "test.nomadv1"
