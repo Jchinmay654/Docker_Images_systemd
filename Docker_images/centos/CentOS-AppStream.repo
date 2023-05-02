@@ -1,0 +1,8 @@
+[AppStream]
+name=CentOS-$releasever - AppStream
+baseurl=http://vault.centos.org/8.4.2105/AppStream/x86_64/os/
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
+enabled=1
+metadata_expire=7d
+
